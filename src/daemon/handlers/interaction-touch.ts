@@ -349,7 +349,7 @@ async function dispatchDirectIosSelectorInteraction(params: {
     const actionFinishedAt = Date.now();
     const point = readPointFromDirectSelectorTapResult(data);
     const { result, responseData } = buildInteractionResponseData({
-      source: { kind: 'runner-payload', data, point },
+      source: { kind: 'runner-payload', targetKind: 'selector', data, point },
       referenceFrame: readReferenceFrameFromDirectSelectorTapResult(data),
       extra: {
         ...extra,
@@ -484,11 +484,7 @@ async function dispatchFillViaRuntime(
           ? undefined
           : readSnapshotNodesReferenceFrame(session.snapshot?.nodes ?? []);
       return buildInteractionResponseData({
-        // refBackendWireShape keeps the historical fill @ref wire response
-        // (backendResult + identity extras) while the shared builder owns the
-        // extras — the hand-rolled version of this branch dropped evidence
-        // (PR #1064 review).
-        source: { kind: 'runtime', result, refBackendWireShape: true },
+        source: { kind: 'runtime', result },
         referenceFrame,
         extra: { text: parsedTarget.text },
         staleRefsWarning,
